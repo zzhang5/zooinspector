@@ -10,5 +10,6 @@ Build
 - $ mvn clean package
 
 Run
+- $ chmod +x target/zooinspector-pkg/bin/zooinspector.sh
 - $ target/zooinspector-pkg/bin/zooinspector.sh
 
