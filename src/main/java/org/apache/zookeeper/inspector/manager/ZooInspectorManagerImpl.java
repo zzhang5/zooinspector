@@ -967,6 +967,7 @@ public class ZooInspectorManagerImpl implements ZooInspectorManager
   @Override
   public List<String> loadNodeViewersFile(File selectedFile) throws IOException
   {
+    // TODO read from src/main/resources/defaultNodeVeiwers.cfg
     List<String> result = new ArrayList<String>();
     if (defaultNodeViewersFile.exists())
     {
@@ -994,6 +995,10 @@ public class ZooInspectorManagerImpl implements ZooInspectorManager
       {
         reader.close();
       }
+    } else {
+      result.add("org.apache.zookeeper.inspector.gui.nodeviewer.NodeViewerData");
+      result.add("org.apache.zookeeper.inspector.gui.nodeviewer.NodeViewerMetaData");
+      result.add("org.apache.zookeeper.inspector.gui.nodeviewer.NodeViewerACL");
     }
     return result;
   }
