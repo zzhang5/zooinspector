@@ -44,8 +44,8 @@ public class ZooInspector {
     public static void main(String[] args) {
         try {
           Dimension screenSize = getScreenResolution();
-          int screenWidth = screenSize.width;
-          int screenHeight = screenSize.height;
+//          int screenWidth = screenSize.width;
+//          int screenHeight = screenSize.height;
           // System.out.println("screenWidth: " + screenWidth + ", screenHeight: " + screenHeight);
 
 
@@ -68,8 +68,8 @@ public class ZooInspector {
             });
 
             frame.setContentPane(zooInspectorPanel);
-            // frame.setSize(1024, 768);
-            frame.setSize(screenWidth * 2 / 3, screenHeight);
+            frame.setSize(1024, 768);
+//            frame.setSize(screenWidth * 2 / 3, screenHeight);
             frame.setVisible(true);
         } catch (Exception e) {
             LoggerFactory.getLogger().error(

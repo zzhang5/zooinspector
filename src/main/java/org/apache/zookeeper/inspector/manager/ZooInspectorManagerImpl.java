@@ -23,10 +23,12 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -566,16 +568,19 @@ public class ZooInspectorManagerImpl implements ZooInspectorManager
         Stat s = zooKeeper.exists(nodePath, false);
         if (s != null)
         {
+          SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS z");
           nodeMeta.put(A_VERSION, String.valueOf(s.getAversion()));
-          nodeMeta.put(C_TIME, String.valueOf(s.getCtime()));
+          // nodeMeta.put(C_TIME, String.valueOf(s.getCtime()));
+          nodeMeta.put(C_TIME, format.format(new Date(s.getCtime())));
           nodeMeta.put(C_VERSION, String.valueOf(s.getCversion()));
-          nodeMeta.put(CZXID, String.valueOf(s.getCzxid()));
+          nodeMeta.put(CZXID, "0x" + Long.toHexString(s.getCzxid()));
           nodeMeta.put(DATA_LENGTH, String.valueOf(s.getDataLength()));
-          nodeMeta.put(EPHEMERAL_OWNER, String.valueOf(s.getEphemeralOwner()));
-          nodeMeta.put(M_TIME, String.valueOf(s.getMtime()));
-          nodeMeta.put(MZXID, String.valueOf(s.getMzxid()));
+          nodeMeta.put(EPHEMERAL_OWNER, "0x" + Long.toHexString(s.getEphemeralOwner()));
+          // nodeMeta.put(M_TIME, String.valueOf(s.getMtime()));
+          nodeMeta.put(M_TIME, format.format(new Date(s.getMtime())));
+          nodeMeta.put(MZXID, "0x" + Long.toHexString(s.getMzxid()));
           nodeMeta.put(NUM_CHILDREN, String.valueOf(s.getNumChildren()));
-          nodeMeta.put(PZXID, String.valueOf(s.getPzxid()));
+          nodeMeta.put(PZXID, "0x" + Long.toHexString(s.getPzxid()));
           nodeMeta.put(VERSION, String.valueOf(s.getVersion()));
         }
       }
