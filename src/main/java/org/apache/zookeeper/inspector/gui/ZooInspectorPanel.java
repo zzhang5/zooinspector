@@ -279,12 +279,16 @@ public class ZooInspectorPanel extends JPanel implements
             protected void done() {
                 try {
                     if (get()) {
+                        // connect successfully
                         treeViewer.refreshView();
                         connectButton.setEnabled(false);
                         disconnectButton.setEnabled(true);
                         refreshButton.setEnabled(true);
                         addNodeButton.setEnabled(true);
                         deleteNodeButton.setEnabled(true);
+
+                        // save successful connect string in default properties
+                        zooInspectorManager.updateDefaultConnectionFile(connectionProps);
                     } else {
                         JOptionPane.showMessageDialog(ZooInspectorPanel.this,
                                 "Unable to connect to zookeeper", "Error",
@@ -302,6 +306,10 @@ public class ZooInspectorPanel extends JPanel implements
                             .error(
                                     "Error occurred while connecting to ZooKeeper server",
                                     e);
+                } catch (IOException e) {
+                    LoggerFactory
+                      .getLogger()
+                      .error("Error occurred while update default connections", e);
                 }
             }
 

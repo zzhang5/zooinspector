@@ -135,4 +135,6 @@ public interface ZooInspectorManager extends ZooInspectorNodeManager,
      *             - if the default configuration file cannot be saved
      */
     public void saveDefaultConnectionFile(Properties props) throws IOException;
+
+    public void updateDefaultConnectionFile(Properties props) throws IOException;
 }

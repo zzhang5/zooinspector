@@ -119,13 +119,13 @@ public class ZooInspectorConnectionPropertiesDialog extends JDialog {
                 components.put(entry.getKey(), text);
             } else if (entry.getValue().size() == 1) {
                 JTextField text = new JTextField(entry.getValue().get(0));
- 
+
                 // accepts enter = "OK" button, escape = "cancel"
-                text.addKeyListener(new KeyListener() {                
+                text.addKeyListener(new KeyListener() {
                   @Override
-                  public void keyTyped(KeyEvent e) { }               
+                  public void keyTyped(KeyEvent e) { }
                   @Override
-                  public void keyReleased(KeyEvent e) { }               
+                  public void keyReleased(KeyEvent e) { }
                   @Override
                   public void keyPressed(KeyEvent e) {
 //                    System.out.println("keyPressed: " + e.getKeyCode());
@@ -143,7 +143,7 @@ public class ZooInspectorConnectionPropertiesDialog extends JDialog {
                     }
                   }
                 });
-                
+
                 GridBagConstraints c2 = new GridBagConstraints();
                 c2.gridx = 2;
                 c2.gridy = rowPos;
@@ -162,6 +162,7 @@ public class ZooInspectorConnectionPropertiesDialog extends JDialog {
                 List<String> list = entry.getValue();
                 JComboBox combo = new JComboBox(list.toArray(new String[list
                         .size()]));
+                combo.setEditable(true);
                 combo.setSelectedItem(list.get(0));
                 GridBagConstraints c2 = new GridBagConstraints();
                 c2.gridx = 2;

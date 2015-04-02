@@ -110,6 +110,8 @@ public class ZooInspectorManagerImpl implements ZooInspectorManager
   private String defaultEncryptionManager;
   private String defaultTimeout;
   private String defaultHosts;
+  private List<String> defaultHostsList;
+  private final int defaultHostsListSize = 10;
 
   // zk cache that updates when:
   // - refresh button is clicked
@@ -810,7 +812,8 @@ public class ZooInspectorManagerImpl implements ZooInspectorManager
   public Pair<Map<String, List<String>>, Map<String, String>> getConnectionPropertiesTemplate()
   {
     Map<String, List<String>> template = new LinkedHashMap<String, List<String>>();
-    template.put(CONNECT_STRING, Arrays.asList(new String[] { defaultHosts }));
+    // template.put(CONNECT_STRING, Arrays.asList(new String[] { defaultHosts }));
+    template.put(CONNECT_STRING, defaultHostsList);
     template.put(SESSION_TIMEOUT, Arrays.asList(new String[] { defaultTimeout }));
     template.put(DATA_ENCRYPTION_MANAGER,
                  Arrays.asList(new String[] { defaultEncryptionManager }));
@@ -1041,6 +1044,10 @@ public class ZooInspectorManagerImpl implements ZooInspectorManager
       defaultTimeout = "5000";
       defaultHosts = "localhost:2181";
     }
+
+    defaultHostsList = new ArrayList<String>(Arrays.asList(defaultHosts.trim().split("\\s+")));
+    System.out.println("defaultHostsList: " + defaultHostsList);
+//    System.out.println("end");
   }
 
   /*
@@ -1078,6 +1085,36 @@ public class ZooInspectorManagerImpl implements ZooInspectorManager
     {
       writer.close();
     }
+  }
+
+  @Override
+  public void updateDefaultConnectionFile(Properties connectionProps) throws IOException
+  {
+    Properties properties = new Properties();
+
+    String connStr = connectionProps.getProperty(CONNECT_STRING);
+    defaultHostsList.remove(connStr);
+    while (defaultHostsList.size() > defaultHostsListSize) {
+      defaultHostsList.remove(defaultHostsList.size()-1);
+    }
+    try {
+      defaultHostsList.add(0, connStr);
+    } catch (Throwable t) {
+      System.out.println(t);
+    }
+
+    StringBuilder sb = new StringBuilder();
+    for (int i = 0; i < defaultHostsList.size(); i++) {
+      String str = defaultHostsList.get(i);
+      if (i > 0) {
+        sb.append(" ");
+      }
+      sb.append(str);
+    }
+    properties.setProperty(CONNECT_STRING, sb.toString());
+    properties.setProperty(SESSION_TIMEOUT, defaultTimeout);
+    properties.getProperty(DATA_ENCRYPTION_MANAGER, defaultEncryptionManager);
+    saveDefaultConnectionFile(properties);
   }
 
   /*
