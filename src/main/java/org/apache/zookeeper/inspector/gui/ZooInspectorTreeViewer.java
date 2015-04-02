@@ -227,10 +227,10 @@ public class ZooInspectorTreeViewer extends JPanel implements NodeListener,
      */
     public void refreshView() {
       // reconnect if necessary
-      if (zooInspectorManager.getZookeeperStates() == States.CLOSED) {
-        System.out.println("ZooInspectorTreeViewer#refresh try reconnecting...");
-        zooInspectorManager.connect(zooInspectorManager.getLastConnectionProps());
-      }
+//      if (zooInspectorManager.getZookeeperStates() == States.CLOSED) {
+//        System.out.println("ZooInspectorTreeViewer#refresh try reconnecting...");
+//        zooInspectorManager.connect(zooInspectorManager.getLastConnectionProps());
+//      }
 
 //        final Set<TreePath> expandedNodes = new LinkedHashSet<TreePath>();
         List<String> visiblePaths = new ArrayList<String>();
