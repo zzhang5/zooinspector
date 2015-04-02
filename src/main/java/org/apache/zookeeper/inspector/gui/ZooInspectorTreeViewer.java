@@ -184,7 +184,7 @@ public class ZooInspectorTreeViewer extends JPanel implements NodeListener,
     }
 
     private void doRefresh(final TreePath[] selectedNodes) {
-      System.out.println("\t selectedNodes: " + selectedNodes);
+      System.out.println("\tdoRefresh#selectedTreePaths: " + Arrays.toString(selectedNodes));
 
       final Set<TreePath> expandedNodes = new LinkedHashSet<TreePath>();
       int rowCount = tree.getRowCount();
@@ -196,7 +196,7 @@ public class ZooInspectorTreeViewer extends JPanel implements NodeListener,
       }
 
 //      final TreePath[] selectedNodes = tree.getSelectionPaths();
-      System.out.println("\t expandedNodes: " + expandedNodes);
+      System.out.println("\texpandedNodes: " + expandedNodes);
 
 
       SwingWorker<Boolean, Void> worker = new SwingWorker<Boolean, Void>() {
@@ -230,8 +230,8 @@ public class ZooInspectorTreeViewer extends JPanel implements NodeListener,
 
 //        List<String> selectedPaths = new ArrayList<String>();
         int rowCount = tree.getRowCount();
-        System.out.println("refreshView invoked.");
-        System.out.println("\t rowCount: " + rowCount);
+        System.out.println("[START] ZooInspectorTreeViewer#refreshView invoked.");
+        System.out.println("\trowCount: " + rowCount);
 
         for (int i = 0; i < rowCount; i++) {
             TreePath path = tree.getPathForRow(i);
@@ -243,7 +243,7 @@ public class ZooInspectorTreeViewer extends JPanel implements NodeListener,
 
 //        final TreePath[] selectedNodes = tree.getSelectionPaths();
 
-        System.out.println("\t visiblePaths: " + visiblePaths);
+        System.out.println("\tvisiblePaths: " + visiblePaths);
 //        System.out.println("selectedNodes: " + selectedPaths);
         try
         {
@@ -259,6 +259,7 @@ public class ZooInspectorTreeViewer extends JPanel implements NodeListener,
 
         skipRefreshPaths.addAll(getExpandedNodes());
         doRefresh(tree.getSelectionPaths());
+        System.out.println("[END] ZooInspectorTreeViewer#refreshView invoked.");
     }
 
     /**

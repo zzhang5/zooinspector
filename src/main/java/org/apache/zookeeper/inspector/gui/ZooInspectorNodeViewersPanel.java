@@ -109,7 +109,7 @@ public class ZooInspectorNodeViewersPanel extends JPanel implements
         long start = System.currentTimeMillis();
 
         TreePath[] paths = e.getPaths();
-        System.out.println("valueChanged() invoked. paths: " + Arrays.asList(paths));
+        System.out.println("TreeSelectionListener#valueChanged() invoked. paths: " + Arrays.toString(paths));
 //        if (paths != null && paths.length > 0) {
 //          List<String> selectedPaths = ZooInspectorUtil.treePathToZnodePath(paths);
 //          System.out.println("selectedPath: " + selectedPaths);
@@ -150,8 +150,8 @@ public class ZooInspectorNodeViewersPanel extends JPanel implements
         }
         reloadSelectedViewer();
         long end = System.currentTimeMillis();
-        System.out.println("\t selectedNodes: " + selectedNodes);
-        System.out.println("\t ZooInspectorNodeViewersPanel.valueChanged() took: " + (end-start));
+        System.out.println("\t valueChanged#selectedNodes: " + selectedNodes);
+        System.out.println("\t ZooInspectorNodeViewersPanel#valueChanged() took: " + (end-start));
     }
 
     /*

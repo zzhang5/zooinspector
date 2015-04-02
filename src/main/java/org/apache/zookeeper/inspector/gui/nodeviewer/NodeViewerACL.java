@@ -77,7 +77,9 @@ public class NodeViewerACL extends ZooInspectorNodeViewer {
      */
     @Override
     public void nodeSelectionChanged(List<String> selectedNodes) {
-        this.aclDataPanel.removeAll();
+//        this.aclDataPanel.removeAll();
+//        this.aclDataPanel.setLayout(new GridBagLayout());
+        
         if (selectedNodes.size() > 0) {
             this.selectedNode = selectedNodes.get(0);
             SwingWorker<List<Map<String, String>>, Void> worker = new SwingWorker<List<Map<String, String>>, Void>() {
@@ -105,6 +107,7 @@ public class NodeViewerACL extends ZooInspectorNodeViewer {
                                 "Error retrieving ACL Information for node: "
                                         + NodeViewerACL.this.selectedNode, e);
                     }
+                    aclDataPanel.removeAll();
                     aclDataPanel.setLayout(new GridBagLayout());
                     int j = 0;
                     for (Map<String, String> data : acls) {

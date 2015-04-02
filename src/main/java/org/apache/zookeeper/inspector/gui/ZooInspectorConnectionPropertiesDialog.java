@@ -164,6 +164,30 @@ public class ZooInspectorConnectionPropertiesDialog extends JDialog {
                         .size()]));
                 combo.setEditable(true);
                 combo.setSelectedItem(list.get(0));
+                
+                combo.getEditor().getEditorComponent().addKeyListener(new KeyListener() {
+                  @Override
+                  public void keyTyped(KeyEvent e) { }
+                  @Override
+                  public void keyReleased(KeyEvent e) { }
+                  @Override
+                  public void keyPressed(KeyEvent e) {
+                    switch (e.getKeyCode()) {
+                    case KeyEvent.VK_ENTER:
+                      ZooInspectorConnectionPropertiesDialog.this.dispose();
+                      Properties connectionProps = getConnectionProps();
+                      zooInspectorPanel.connect(connectionProps);
+                      break;
+                    case KeyEvent.VK_ESCAPE:
+                      ZooInspectorConnectionPropertiesDialog.this.dispose();
+                      break;
+                    default:
+                      System.out.println("[dbg] enter pressed");
+                      break;
+                    }
+                  }
+                });
+                
                 GridBagConstraints c2 = new GridBagConstraints();
                 c2.gridx = 2;
                 c2.gridy = rowPos;

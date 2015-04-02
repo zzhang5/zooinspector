@@ -45,7 +45,7 @@ import org.apache.zookeeper.inspector.manager.ZooInspectorNodeManager;
 public class NodeViewerMetaData extends ZooInspectorNodeViewer {
     private ZooInspectorNodeManager zooInspectorManager;
     private final JPanel metaDataPanel;
-    private String selectedNode;
+    // private String selectedNode;
 
     /**
 	 * 
@@ -80,14 +80,16 @@ public class NodeViewerMetaData extends ZooInspectorNodeViewer {
     @Override
     public void nodeSelectionChanged(List<String> selectedNodes) {
         this.metaDataPanel.removeAll();
+        this.metaDataPanel.setLayout(new GridBagLayout());
+
         if (selectedNodes.size() > 0) {
-            this.selectedNode = selectedNodes.get(0);
+            final String selectedNode = selectedNodes.get(0);
             SwingWorker<Map<String, String>, Void> worker = new SwingWorker<Map<String, String>, Void>() {
 
                 @Override
                 protected Map<String, String> doInBackground() throws Exception {
                     return NodeViewerMetaData.this.zooInspectorManager
-                            .getNodeMeta(NodeViewerMetaData.this.selectedNode);
+                            .getNodeMeta(selectedNode);
                 }
 
                 @Override
@@ -99,17 +101,17 @@ public class NodeViewerMetaData extends ZooInspectorNodeViewer {
                         data = new HashMap<String, String>();
                         LoggerFactory.getLogger().error(
                                 "Error retrieving meta data for node: "
-                                        + NodeViewerMetaData.this.selectedNode,
+                                        + selectedNode,
                                 e);
                     } catch (ExecutionException e) {
                         data = new HashMap<String, String>();
                         LoggerFactory.getLogger().error(
                                 "Error retrieving meta data for node: "
-                                        + NodeViewerMetaData.this.selectedNode,
+                                        + selectedNode,
                                 e);
                     }
-                    NodeViewerMetaData.this.metaDataPanel
-                            .setLayout(new GridBagLayout());
+//                    NodeViewerMetaData.this.metaDataPanel
+//                            .setLayout(new GridBagLayout());
                     JPanel infoPanel = new JPanel();
                     infoPanel.setBackground(Color.WHITE);
                     infoPanel.setLayout(new GridBagLayout());
@@ -162,7 +164,7 @@ public class NodeViewerMetaData extends ZooInspectorNodeViewer {
                     c.ipady = 0;
                     NodeViewerMetaData.this.metaDataPanel.add(infoPanel, c);
                     NodeViewerMetaData.this.metaDataPanel.revalidate();
-                    NodeViewerMetaData.this.metaDataPanel.repaint();
+                    NodeViewerMetaData.this.metaDataPanel.repaint();                    
                 }
             };
             worker.execute();

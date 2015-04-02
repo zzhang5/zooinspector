@@ -43,7 +43,7 @@ public class ZooInspector {
      */
     public static void main(String[] args) {
         try {
-          Dimension screenSize = getScreenResolution();
+//          Dimension screenSize = getScreenResolution();
 //          int screenWidth = screenSize.width;
 //          int screenHeight = screenSize.height;
           // System.out.println("screenWidth: " + screenWidth + ", screenHeight: " + screenHeight);
