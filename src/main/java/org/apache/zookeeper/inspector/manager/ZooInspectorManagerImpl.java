@@ -1097,11 +1097,8 @@ public class ZooInspectorManagerImpl implements ZooInspectorManager
     while (defaultHostsList.size() > defaultHostsListSize) {
       defaultHostsList.remove(defaultHostsList.size()-1);
     }
-    try {
-      defaultHostsList.add(0, connStr);
-    } catch (Throwable t) {
-      System.out.println(t);
-    }
+
+    defaultHostsList.add(0, connStr);
 
     StringBuilder sb = new StringBuilder();
     for (int i = 0; i < defaultHostsList.size(); i++) {
@@ -1111,6 +1108,7 @@ public class ZooInspectorManagerImpl implements ZooInspectorManager
       }
       sb.append(str);
     }
+    System.out.println("updateDefaultConnectionFile#connectString: " + sb.toString());
     properties.setProperty(CONNECT_STRING, sb.toString());
     properties.setProperty(SESSION_TIMEOUT, defaultTimeout);
     properties.getProperty(DATA_ENCRYPTION_MANAGER, defaultEncryptionManager);

@@ -82,6 +82,11 @@ public class ZooInspectorConnectionPropertiesDialog extends JDialog {
         final JFileChooser fileChooser = new JFileChooser();
         options.setLayout(new GridBagLayout());
         int i = 0;
+
+        // move buttons declaration in front so we can call them for ENTER/ESC key events
+        final JButton okButton = new JButton("OK");
+        final JButton cancelButton = new JButton("Cancel");
+
         components = new HashMap<String, JComponent>();
         for (Entry<String, List<String>> entry : connectionPropertiesTemplate
                 .entrySet()) {
@@ -128,15 +133,16 @@ public class ZooInspectorConnectionPropertiesDialog extends JDialog {
                   public void keyReleased(KeyEvent e) { }
                   @Override
                   public void keyPressed(KeyEvent e) {
-//                    System.out.println("keyPressed: " + e.getKeyCode());
                     switch (e.getKeyCode()) {
                     case KeyEvent.VK_ENTER:
-                      ZooInspectorConnectionPropertiesDialog.this.dispose();
-                      Properties connectionProps = getConnectionProps();
-                      zooInspectorPanel.connect(connectionProps);
+//                      ZooInspectorConnectionPropertiesDialog.this.dispose();
+//                      Properties connectionProps = getConnectionProps();
+//                      zooInspectorPanel.connect(connectionProps);
+                      okButton.doClick();
                       break;
                     case KeyEvent.VK_ESCAPE:
-                      ZooInspectorConnectionPropertiesDialog.this.dispose();
+//                      ZooInspectorConnectionPropertiesDialog.this.dispose();
+                      cancelButton.doClick();
                       break;
                     default:
                       break;
@@ -164,7 +170,7 @@ public class ZooInspectorConnectionPropertiesDialog extends JDialog {
                         .size()]));
                 combo.setEditable(true);
                 combo.setSelectedItem(list.get(0));
-                
+
                 combo.getEditor().getEditorComponent().addKeyListener(new KeyListener() {
                   @Override
                   public void keyTyped(KeyEvent e) { }
@@ -174,20 +180,21 @@ public class ZooInspectorConnectionPropertiesDialog extends JDialog {
                   public void keyPressed(KeyEvent e) {
                     switch (e.getKeyCode()) {
                     case KeyEvent.VK_ENTER:
-                      ZooInspectorConnectionPropertiesDialog.this.dispose();
-                      Properties connectionProps = getConnectionProps();
-                      zooInspectorPanel.connect(connectionProps);
+//                      ZooInspectorConnectionPropertiesDialog.this.dispose();
+//                      Properties connectionProps = getConnectionProps();
+//                      zooInspectorPanel.connect(connectionProps);
+                      okButton.doClick();
                       break;
                     case KeyEvent.VK_ESCAPE:
-                      ZooInspectorConnectionPropertiesDialog.this.dispose();
+//                      ZooInspectorConnectionPropertiesDialog.this.dispose();
+                      cancelButton.doClick();
                       break;
                     default:
-                      System.out.println("[dbg] enter pressed");
                       break;
                     }
                   }
                 });
-                
+
                 GridBagConstraints c2 = new GridBagConstraints();
                 c2.gridx = 2;
                 c2.gridy = rowPos;
@@ -294,7 +301,8 @@ public class ZooInspectorConnectionPropertiesDialog extends JDialog {
         c6.ipadx = 0;
         c6.ipady = 0;
         buttonsPanel.add(saveDefaultPropsFileButton, c6);
-        JButton okButton = new JButton("OK");
+
+        // JButton okButton = new JButton("OK");
         okButton.addActionListener(new ActionListener() {
 
             @Override
@@ -317,7 +325,8 @@ public class ZooInspectorConnectionPropertiesDialog extends JDialog {
         c4.ipadx = 0;
         c4.ipady = 0;
         buttonsPanel.add(okButton, c4);
-        JButton cancelButton = new JButton("Cancel");
+
+        // JButton cancelButton = new JButton("Cancel");
         cancelButton.addActionListener(new ActionListener() {
 
             @Override
@@ -368,7 +377,9 @@ public class ZooInspectorConnectionPropertiesDialog extends JDialog {
             if (component instanceof JTextField) {
                 value = ((JTextField) component).getText();
             } else if (component instanceof JComboBox) {
-                value = ((JComboBox) component).getSelectedItem().toString();
+              // value = ((JComboBox) component).getSelectedItem().toString();
+              value = ((JComboBox) component).getEditor().getItem().toString();
+              // System.out.println("getConnectionProps#value: " + value);
             }
             connectionProps.put(entry.getKey(), value);
         }
