@@ -9,9 +9,11 @@ An improved zookeeper inspector
 - Add a dropdown menu to record the history of successfully connected zookeeper addresses
 
 Build
-- $ mvn clean package
+- $git clone https://github.com/zzhang5/zooinspector.git
+- $cd zooinspector/
+- $mvn clean package
 
 Run
-- $ chmod +x target/zooinspector-pkg/bin/zooinspector.sh
-- $ target/zooinspector-pkg/bin/zooinspector.sh
+- $chmod +x target/zooinspector-pkg/bin/zooinspector.sh
+- $target/zooinspector-pkg/bin/zooinspector.sh
 
