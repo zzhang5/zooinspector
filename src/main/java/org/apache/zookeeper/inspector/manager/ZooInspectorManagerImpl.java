@@ -170,6 +170,9 @@ public class ZooInspectorManagerImpl implements ZooInspectorManager
         }
         this.connectString = connectString;
         this.sessionTimeout = Integer.valueOf(sessionTimeout);
+
+//        long start = System.currentTimeMillis();
+//        System.out.println("[START] connecting...");
         this.zooKeeper =
             new ZooKeeperRetry(connectString,
                                Integer.valueOf(sessionTimeout),
@@ -186,6 +189,8 @@ public class ZooInspectorManagerImpl implements ZooInspectorManager
                                  }
                                });
         ((ZooKeeperRetry) this.zooKeeper).setRetryLimit(10);
+//        System.out.println("[START] connected took: " + (System.currentTimeMillis() - start));
+
         connected = ((ZooKeeperRetry) this.zooKeeper).testConnection();
       }
     }
@@ -329,6 +334,8 @@ public class ZooInspectorManagerImpl implements ZooInspectorManager
             {
               stat = new Stat();
               childs = zooKeeper.getChildren(path, false, stat);
+            } catch (Exception e) {
+              // System.out.println("exception: " + e);
             }
             finally
             {
@@ -1031,7 +1038,7 @@ public class ZooInspectorManagerImpl implements ZooInspectorManager
               ? "org.apache.zookeeper.inspector.encryption.BasicDataEncryptionManager"
               : props.getProperty(DATA_ENCRYPTION_MANAGER);
       defaultTimeout =
-          props.getProperty(SESSION_TIMEOUT) == null ? "5000"
+          props.getProperty(SESSION_TIMEOUT) == null ? "30000"
               : props.getProperty(SESSION_TIMEOUT);
       defaultHosts =
           props.getProperty(CONNECT_STRING) == null ? "localhost:2181"
@@ -1041,7 +1048,7 @@ public class ZooInspectorManagerImpl implements ZooInspectorManager
     {
       defaultEncryptionManager =
           "org.apache.zookeeper.inspector.encryption.BasicDataEncryptionManager";
-      defaultTimeout = "5000";
+      defaultTimeout = "30000";
       defaultHosts = "localhost:2181";
     }
 

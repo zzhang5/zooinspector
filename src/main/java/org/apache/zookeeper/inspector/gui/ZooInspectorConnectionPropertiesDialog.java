@@ -135,13 +135,9 @@ public class ZooInspectorConnectionPropertiesDialog extends JDialog {
                   public void keyPressed(KeyEvent e) {
                     switch (e.getKeyCode()) {
                     case KeyEvent.VK_ENTER:
-//                      ZooInspectorConnectionPropertiesDialog.this.dispose();
-//                      Properties connectionProps = getConnectionProps();
-//                      zooInspectorPanel.connect(connectionProps);
                       okButton.doClick();
                       break;
                     case KeyEvent.VK_ESCAPE:
-//                      ZooInspectorConnectionPropertiesDialog.this.dispose();
                       cancelButton.doClick();
                       break;
                     default:
@@ -180,13 +176,9 @@ public class ZooInspectorConnectionPropertiesDialog extends JDialog {
                   public void keyPressed(KeyEvent e) {
                     switch (e.getKeyCode()) {
                     case KeyEvent.VK_ENTER:
-//                      ZooInspectorConnectionPropertiesDialog.this.dispose();
-//                      Properties connectionProps = getConnectionProps();
-//                      zooInspectorPanel.connect(connectionProps);
                       okButton.doClick();
                       break;
                     case KeyEvent.VK_ESCAPE:
-//                      ZooInspectorConnectionPropertiesDialog.this.dispose();
                       cancelButton.doClick();
                       break;
                     default:

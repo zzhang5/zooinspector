@@ -281,7 +281,7 @@ public class ZooKeeperRetry extends ZooKeeper {
                 LoggerFactory.getLogger().warn(
                         "ZooKeeper connection lost.  Trying to reconnect.");
             }
-        } while (count++ < 5);
+        } while (count++ < 3);
         return false;
     }
 

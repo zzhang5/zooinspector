@@ -49,6 +49,7 @@ import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
 import org.apache.zookeeper.KeeperException;
+import org.apache.zookeeper.ZooKeeper.States;
 import org.apache.zookeeper.inspector.ZooInspectorUtil;
 import org.apache.zookeeper.inspector.manager.NodeListener;
 import org.apache.zookeeper.inspector.manager.ZooInspectorManager;
@@ -225,6 +226,12 @@ public class ZooInspectorTreeViewer extends JPanel implements NodeListener,
      * Refresh the tree view
      */
     public void refreshView() {
+      // reconnect if necessary
+      if (zooInspectorManager.getZookeeperStates() == States.CLOSED) {
+        System.out.println("ZooInspectorTreeViewer#refresh try reconnecting...");
+        zooInspectorManager.connect(zooInspectorManager.getLastConnectionProps());
+      }
+
 //        final Set<TreePath> expandedNodes = new LinkedHashSet<TreePath>();
         List<String> visiblePaths = new ArrayList<String>();
 
@@ -242,8 +249,7 @@ public class ZooInspectorTreeViewer extends JPanel implements NodeListener,
         }
 
 //        final TreePath[] selectedNodes = tree.getSelectionPaths();
-
-        System.out.println("\tvisiblePaths: " + visiblePaths);
+//        System.out.println("\tvisiblePaths: " + visiblePaths);
 //        System.out.println("selectedNodes: " + selectedPaths);
         try
         {
