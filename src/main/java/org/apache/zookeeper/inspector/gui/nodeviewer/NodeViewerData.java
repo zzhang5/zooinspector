@@ -21,6 +21,8 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -38,6 +40,7 @@ import javax.swing.text.DefaultHighlighter;
 import javax.swing.text.DefaultHighlighter.DefaultHighlightPainter;
 import javax.swing.text.DefaultStyledDocument;
 
+import org.apache.zookeeper.inspector.gui.NodeDataViewerFindDialog;
 import org.apache.zookeeper.inspector.gui.ZooInspectorIconResources;
 import org.apache.zookeeper.inspector.logger.LoggerFactory;
 import org.apache.zookeeper.inspector.manager.ZooInspectorNodeManager;
@@ -48,58 +51,86 @@ import org.apache.zookeeper.inspector.manager.ZooInspectorNodeManager;
 public class NodeViewerData extends ZooInspectorNodeViewer {
     private ZooInspectorNodeManager zooInspectorManager;
     private final JTextPane dataArea;
+    private final DefaultHighlighter highlighter;
+    private final JScrollPane scroller;
     private final JToolBar toolbar;
     private String selectedNode;
 
+    public void highlight(String selText) {
+      if (selText == null || selText.isEmpty()) {
+        return;
+      }
+
+      highlighter.removeAllHighlights();
+      DefaultHighlightPainter hPainter = new DefaultHighlightPainter(Color.YELLOW /*new Color(0xFFAA00)*/);
+      // String selText = txtPane.getSelectedText();
+      String contText = "";// = jTextPane1.getText();
+
+      DefaultStyledDocument document = (DefaultStyledDocument) dataArea.getDocument();
+
+      try {
+          contText = document.getText(0, document.getLength());
+      } catch (BadLocationException ex) {
+        LoggerFactory.getLogger().error(null, ex);
+      }
+
+      int index = 0;
+      while ((index = contText.indexOf(selText, index)) > -1){
+        try {
+            highlighter.addHighlight(index, selText.length()+index, hPainter);
+            index = index + selText.length();
+        } catch (BadLocationException ex) {
+            LoggerFactory.getLogger().error(null, ex);
+            //System.out.println(index);
+        }
+      }
+    }
+
     /**
-	 *
-	 */
+     *
+     */
     public NodeViewerData() {
         this.setLayout(new BorderLayout());
         this.dataArea = new JTextPane();
+        this.highlighter = (DefaultHighlighter) dataArea.getHighlighter();
 
         // add highlighter
-        dataArea.addCaretListener(new CaretListener() {
+//        dataArea.addCaretListener(new CaretListener() {
+//
+//          public void caretUpdate(CaretEvent evt) {
+//              JTextPane txtPane = (JTextPane) evt.getSource();
+//              DefaultHighlighter highlighter = (DefaultHighlighter) txtPane.getHighlighter();
+//              if (evt.getDot() == evt.getMark()) {
+//                highlighter.removeAllHighlights();
+//                return;
+//              }
+//
+//              highlight(txtPane.getSelectedText());
+//            }
+//        });
 
-          public void caretUpdate(CaretEvent evt) {
-              JTextPane txtPane = (JTextPane) evt.getSource();
-              DefaultHighlighter highlighter = (DefaultHighlighter) txtPane.getHighlighter();
-
+        // add search capability
+        dataArea.addKeyListener(new KeyListener() {
+          @Override
+          public void keyTyped(KeyEvent e) { }
+          @Override
+          public void keyReleased(KeyEvent e) { }
+          @Override
+          public void keyPressed(KeyEvent e) {
+            if ((e.getKeyCode() == KeyEvent.VK_F) && ((e.getModifiers() & KeyEvent.CTRL_MASK) != 0)) {
+              NodeDataViewerFindDialog dialog = new NodeDataViewerFindDialog(NodeViewerData.this);
+              dialog.setVisible(true);
+            } else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
               highlighter.removeAllHighlights();
-              if (evt.getDot() == evt.getMark()) {
-                return;
-              }
-
-              DefaultHighlightPainter hPainter = new DefaultHighlightPainter(Color.YELLOW/*new Color(0xFFAA00)*/);
-              String selText = txtPane.getSelectedText();
-              String contText = "";// = jTextPane1.getText();
-
-              DefaultStyledDocument document = (DefaultStyledDocument) txtPane.getDocument();
-
-              try {
-                  contText = document.getText(0, document.getLength());
-              } catch (BadLocationException ex) {
-                LoggerFactory.getLogger().error(null, ex);
-              }
-
-              int index = 0;
-              while ((index = contText.indexOf(selText, index)) > -1){
-                try {
-                    highlighter.addHighlight(index, selText.length()+index, hPainter);
-                    index = index + selText.length();
-                } catch (BadLocationException ex) {
-                    LoggerFactory.getLogger().error(null, ex);
-                    //System.out.println(index);
-                }
-              }
             }
+          }
         });
 
         this.toolbar = new JToolBar();
         this.toolbar.setFloatable(false);
-        JScrollPane scroller = new JScrollPane(this.dataArea);
-        scroller
-                .setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scroller = new JScrollPane(this.dataArea);
+        scroller.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+
         this.add(scroller, BorderLayout.CENTER);
         this.add(this.toolbar, BorderLayout.NORTH);
         JButton saveButton = new JButton(ZooInspectorIconResources
