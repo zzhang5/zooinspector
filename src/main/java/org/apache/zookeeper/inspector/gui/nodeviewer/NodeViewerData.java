@@ -18,6 +18,7 @@
 package org.apache.zookeeper.inspector.gui.nodeviewer;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Date;
@@ -30,6 +31,12 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 import javax.swing.JToolBar;
 import javax.swing.SwingWorker;
+import javax.swing.event.CaretEvent;
+import javax.swing.event.CaretListener;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DefaultHighlighter;
+import javax.swing.text.DefaultHighlighter.DefaultHighlightPainter;
+import javax.swing.text.DefaultStyledDocument;
 
 import org.apache.zookeeper.inspector.gui.ZooInspectorIconResources;
 import org.apache.zookeeper.inspector.logger.LoggerFactory;
@@ -45,11 +52,49 @@ public class NodeViewerData extends ZooInspectorNodeViewer {
     private String selectedNode;
 
     /**
-	 * 
+	 *
 	 */
     public NodeViewerData() {
         this.setLayout(new BorderLayout());
         this.dataArea = new JTextPane();
+
+        // add highlighter
+        dataArea.addCaretListener(new CaretListener() {
+
+          public void caretUpdate(CaretEvent evt) {
+              JTextPane txtPane = (JTextPane) evt.getSource();
+              DefaultHighlighter highlighter = (DefaultHighlighter) txtPane.getHighlighter();
+
+              highlighter.removeAllHighlights();
+              if (evt.getDot() == evt.getMark()) {
+                return;
+              }
+
+              DefaultHighlightPainter hPainter = new DefaultHighlightPainter(Color.YELLOW/*new Color(0xFFAA00)*/);
+              String selText = txtPane.getSelectedText();
+              String contText = "";// = jTextPane1.getText();
+
+              DefaultStyledDocument document = (DefaultStyledDocument) txtPane.getDocument();
+
+              try {
+                  contText = document.getText(0, document.getLength());
+              } catch (BadLocationException ex) {
+                LoggerFactory.getLogger().error(null, ex);
+              }
+
+              int index = 0;
+              while ((index = contText.indexOf(selText, index)) > -1){
+                try {
+                    highlighter.addHighlight(index, selText.length()+index, hPainter);
+                    index = index + selText.length();
+                } catch (BadLocationException ex) {
+                    LoggerFactory.getLogger().error(null, ex);
+                    //System.out.println(index);
+                }
+              }
+            }
+        });
+
         this.toolbar = new JToolBar();
         this.toolbar.setFloatable(false);
         JScrollPane scroller = new JScrollPane(this.dataArea);
@@ -80,7 +125,7 @@ public class NodeViewerData extends ZooInspectorNodeViewer {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.apache.zookeeper.inspector.gui.nodeviewer.ZooInspectorNodeViewer#
      * getTitle()
@@ -92,7 +137,7 @@ public class NodeViewerData extends ZooInspectorNodeViewer {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.apache.zookeeper.inspector.gui.nodeviewer.ZooInspectorNodeViewer#
      * nodeSelectionChanged(java.util.Set)
@@ -128,7 +173,7 @@ public class NodeViewerData extends ZooInspectorNodeViewer {
                     NodeViewerData.this.dataArea.setText(data);
                     long end = System.currentTimeMillis();
                     System.out.println("NodeViewerData.nodeSelectionChanged() invoked. took: " + (end - start));
-                    
+
                 }
             };
             worker.execute();
@@ -137,7 +182,7 @@ public class NodeViewerData extends ZooInspectorNodeViewer {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.apache.zookeeper.inspector.gui.nodeviewer.ZooInspectorNodeViewer#
      * setZooInspectorManager

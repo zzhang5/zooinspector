@@ -7,6 +7,7 @@ An improved zookeeper inspector
 - Sorted znodes
 - More readable representation of node metadata
 - Add a dropdown menu to record the history of successfully connected zookeeper addresses
+- Highlight matches of selected text in node data viewer
 
 Build
 - $git clone https://github.com/zzhang5/zooinspector.git
