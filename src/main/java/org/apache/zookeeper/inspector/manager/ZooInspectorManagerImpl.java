@@ -94,10 +94,16 @@ public class ZooInspectorManagerImpl implements ZooInspectorManager
    */
   public static final String DATA_ENCRYPTION_MANAGER = "encryptionManager";
 
+  private static final String homeDir = System.getProperty("user.home");
   private static final File defaultNodeViewersFile =
-      new File("./config/defaultNodeVeiwers.cfg");
+      new File(homeDir + "/.zooinspector/defaultNodeVeiwers.cfg");
   private static final File defaultConnectionFile =
-      new File("./config/defaultConnectionSettings.cfg");
+      new File(homeDir + "/.zooinspector/defaultConnectionSettings.cfg");
+
+//  private static final File defaultNodeViewersFile =
+//      new File("./config/defaultNodeVeiwers.cfg");
+//  private static final File defaultConnectionFile =
+//      new File("./config/defaultConnectionSettings.cfg");
 
   private DataEncryptionManager encryptionManager;
   private String connectString;
