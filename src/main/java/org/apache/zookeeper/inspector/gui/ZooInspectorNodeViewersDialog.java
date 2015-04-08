@@ -82,7 +82,7 @@ public class ZooInspectorNodeViewersDialog extends JDialog implements
      *            notified of changes to the node viewers configuration
      * @param manager
      *            - the {@link ZooInspectorManager} for the application
-     * 
+     *
      */
     public ZooInspectorNodeViewersDialog(Frame frame,
             final List<ZooInspectorNodeViewer> currentViewers,
@@ -577,7 +577,7 @@ public class ZooInspectorNodeViewersDialog extends JDialog implements
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * javax.swing.event.ListSelectionListener#valueChanged(javax.swing.event
      * .ListSelectionEvent)

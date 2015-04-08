@@ -24,6 +24,7 @@ import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.net.URL;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -54,9 +55,11 @@ public class ZooInspectorAboutDialog extends JDialog {
         JEditorPane aboutPane = new JEditorPane();
         aboutPane.setEditable(false);
         aboutPane.setOpaque(false);
-        java.net.URL aboutURL = ZooInspectorAboutDialog.class
-                .getResource("about.html");
+//        java.net.URL aboutURL = ZooInspectorAboutDialog.class
+//                .getResource("about.html");
+
         try {
+            URL aboutURL = Thread.currentThread().getContextClassLoader().getResource("about.html");
             aboutPane.setPage(aboutURL);
         } catch (IOException e) {
             LoggerFactory.getLogger().error(

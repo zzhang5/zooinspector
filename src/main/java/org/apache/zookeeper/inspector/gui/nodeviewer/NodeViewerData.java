@@ -24,7 +24,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -34,8 +33,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 import javax.swing.JToolBar;
 import javax.swing.SwingWorker;
-import javax.swing.event.CaretEvent;
-import javax.swing.event.CaretListener;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultHighlighter;
 import javax.swing.text.DefaultHighlighter.DefaultHighlightPainter;
@@ -230,7 +227,7 @@ public class NodeViewerData extends ZooInspectorNodeViewer {
   @Override
   public void nodeSelectionChanged(List<String> selectedNodes) {
     if (selectedNodes.size() > 0) {
-      final long start = System.currentTimeMillis();
+//      final long start = System.currentTimeMillis();
 
       this.selectedNode = selectedNodes.get(0);
       SwingWorker<String, Void> worker = new SwingWorker<String, Void>() {
@@ -255,9 +252,9 @@ public class NodeViewerData extends ZooInspectorNodeViewer {
           NodeViewerData.this.dataArea.setText(data);
           NodeViewerData.this.dataArea.setCaretPosition(0);
           // NodeViewerData.this.dataArea.moveCaretPosition(0);
-          long end = System.currentTimeMillis();
-          System.out.println("NodeViewerData.nodeSelectionChanged() invoked. took: "
-              + (end - start));
+//          long end = System.currentTimeMillis();
+//          System.out.println("NodeViewerData.nodeSelectionChanged() invoked. took: "
+//              + (end - start));
 
         }
       };
