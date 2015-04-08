@@ -19,6 +19,7 @@ package org.apache.zookeeper.inspector.gui.nodeviewer;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -49,180 +50,195 @@ import org.apache.zookeeper.inspector.manager.ZooInspectorNodeManager;
  * A node viewer for displaying the data for the currently selected node
  */
 public class NodeViewerData extends ZooInspectorNodeViewer {
-    private ZooInspectorNodeManager zooInspectorManager;
-    private final JTextPane dataArea;
-    private final DefaultHighlighter highlighter;
-    private final JScrollPane scroller;
-    private final JToolBar toolbar;
-    private String selectedNode;
+  private ZooInspectorNodeManager zooInspectorManager;
+  private final JTextPane dataArea;
+  private final DefaultHighlighter highlighter;
+  private final JScrollPane scroller;
+  private final JToolBar toolbar;
+  private String selectedNode;
 
-    public void highlight(String selText) {
-      if (selText == null || selText.isEmpty()) {
-        return;
+  public void highlight(String selText) {
+    if (selText == null || selText.isEmpty()) {
+      return;
+    }
+
+    highlighter.removeAllHighlights();
+    DefaultHighlightPainter hPainter = new DefaultHighlightPainter(Color.YELLOW /*
+                                                                                 * new
+                                                                                 * Color(0xFFAA00)
+                                                                                 */);
+    // String selText = txtPane.getSelectedText();
+    String contText = "";// = jTextPane1.getText();
+
+    DefaultStyledDocument document = (DefaultStyledDocument) dataArea.getDocument();
+
+    try {
+      contText = document.getText(0, document.getLength());
+    } catch (BadLocationException ex) {
+      LoggerFactory.getLogger().error(null, ex);
+    }
+
+    int index = -1;
+    int firstPos = 0;
+    while ((index = contText.indexOf(selText, index)) > -1) {
+      if (firstPos == 0) {
+        firstPos = index;
       }
-
-      highlighter.removeAllHighlights();
-      DefaultHighlightPainter hPainter = new DefaultHighlightPainter(Color.YELLOW /*new Color(0xFFAA00)*/);
-      // String selText = txtPane.getSelectedText();
-      String contText = "";// = jTextPane1.getText();
-
-      DefaultStyledDocument document = (DefaultStyledDocument) dataArea.getDocument();
-
       try {
-          contText = document.getText(0, document.getLength());
+        highlighter.addHighlight(index, selText.length() + index, hPainter);
+        index = index + selText.length();
       } catch (BadLocationException ex) {
         LoggerFactory.getLogger().error(null, ex);
-      }
-
-      int index = 0;
-      while ((index = contText.indexOf(selText, index)) > -1){
-        try {
-            highlighter.addHighlight(index, selText.length()+index, hPainter);
-            index = index + selText.length();
-        } catch (BadLocationException ex) {
-            LoggerFactory.getLogger().error(null, ex);
-            //System.out.println(index);
-        }
+        // System.out.println(index);
       }
     }
 
-    /**
+    try {
+      // Get the rectangle of the where the text would be visible...
+      Rectangle viewRect = dataArea.modelToView(firstPos);
+      // Scroll to make the rectangle visible
+      dataArea.scrollRectToVisible(viewRect);
+      // Highlight the text
+      dataArea.setCaretPosition(firstPos);
+      // dataArea.moveCaretPosition(index);
+    } catch (BadLocationException e) {
+      // TODO Auto-generated catch block
+    }
+  }
+
+  /**
      *
      */
-    public NodeViewerData() {
-        this.setLayout(new BorderLayout());
-        this.dataArea = new JTextPane();
-        this.highlighter = (DefaultHighlighter) dataArea.getHighlighter();
+  public NodeViewerData() {
+    this.setLayout(new BorderLayout());
+    this.dataArea = new JTextPane();
+    this.highlighter = (DefaultHighlighter) dataArea.getHighlighter();
 
-        // add highlighter
-//        dataArea.addCaretListener(new CaretListener() {
-//
-//          public void caretUpdate(CaretEvent evt) {
-//              JTextPane txtPane = (JTextPane) evt.getSource();
-//              DefaultHighlighter highlighter = (DefaultHighlighter) txtPane.getHighlighter();
-//              if (evt.getDot() == evt.getMark()) {
-//                highlighter.removeAllHighlights();
-//                return;
-//              }
-//
-//              highlight(txtPane.getSelectedText());
-//            }
-//        });
+    // add highlighter
+    // dataArea.addCaretListener(new CaretListener() {
+    //
+    // public void caretUpdate(CaretEvent evt) {
+    // JTextPane txtPane = (JTextPane) evt.getSource();
+    // DefaultHighlighter highlighter = (DefaultHighlighter) txtPane.getHighlighter();
+    // if (evt.getDot() == evt.getMark()) {
+    // highlighter.removeAllHighlights();
+    // return;
+    // }
+    //
+    // highlight(txtPane.getSelectedText());
+    // }
+    // });
 
-        // add search capability
-        dataArea.addKeyListener(new KeyListener() {
-          @Override
-          public void keyTyped(KeyEvent e) { }
-          @Override
-          public void keyReleased(KeyEvent e) { }
-          @Override
-          public void keyPressed(KeyEvent e) {
-            if ((e.getKeyCode() == KeyEvent.VK_F) && ((e.getModifiers() & KeyEvent.CTRL_MASK) != 0)) {
-              NodeDataViewerFindDialog dialog = new NodeDataViewerFindDialog(NodeViewerData.this);
-              dialog.setVisible(true);
-            } else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-              highlighter.removeAllHighlights();
-            }
+    // add search capability
+    dataArea.addKeyListener(new KeyListener() {
+      @Override
+      public void keyTyped(KeyEvent e) {
+      }
+
+      @Override
+      public void keyReleased(KeyEvent e) {
+      }
+
+      @Override
+      public void keyPressed(KeyEvent e) {
+        if ((e.getKeyCode() == KeyEvent.VK_F) && ((e.getModifiers() & KeyEvent.CTRL_MASK) != 0)) {
+          NodeDataViewerFindDialog dialog = new NodeDataViewerFindDialog(NodeViewerData.this);
+          dialog.setVisible(true);
+        } else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+          highlighter.removeAllHighlights();
+        }
+      }
+    });
+
+    this.toolbar = new JToolBar();
+    this.toolbar.setFloatable(false);
+    scroller = new JScrollPane(this.dataArea);
+    scroller.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+
+    this.add(scroller, BorderLayout.CENTER);
+    this.add(this.toolbar, BorderLayout.NORTH);
+    JButton saveButton = new JButton(ZooInspectorIconResources.getSaveIcon());
+    saveButton.addActionListener(new ActionListener() {
+
+      public void actionPerformed(ActionEvent e) {
+        if (selectedNode != null) {
+          if (JOptionPane.showConfirmDialog(NodeViewerData.this,
+              "Are you sure you want to save this node?" + " (this action cannot be reverted)",
+              "Confirm Save", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
+            zooInspectorManager.setData(selectedNode, dataArea.getText());
           }
-        });
-
-        this.toolbar = new JToolBar();
-        this.toolbar.setFloatable(false);
-        scroller = new JScrollPane(this.dataArea);
-        scroller.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-
-        this.add(scroller, BorderLayout.CENTER);
-        this.add(this.toolbar, BorderLayout.NORTH);
-        JButton saveButton = new JButton(ZooInspectorIconResources
-                .getSaveIcon());
-        saveButton.addActionListener(new ActionListener() {
-
-            public void actionPerformed(ActionEvent e) {
-                if (selectedNode != null) {
-                    if (JOptionPane.showConfirmDialog(NodeViewerData.this,
-                            "Are you sure you want to save this node?"
-                                    + " (this action cannot be reverted)",
-                            "Confirm Save", JOptionPane.YES_NO_OPTION,
-                            JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
-                        zooInspectorManager.setData(selectedNode, dataArea
-                                .getText());
-                    }
-                }
-            }
-        });
-        this.toolbar.add(saveButton);
-
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * org.apache.zookeeper.inspector.gui.nodeviewer.ZooInspectorNodeViewer#
-     * getTitle()
-     */
-    @Override
-    public String getTitle() {
-        return "Node Data";
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * org.apache.zookeeper.inspector.gui.nodeviewer.ZooInspectorNodeViewer#
-     * nodeSelectionChanged(java.util.Set)
-     */
-    @Override
-    public void nodeSelectionChanged(List<String> selectedNodes) {
-        if (selectedNodes.size() > 0) {
-            final long start = System.currentTimeMillis();
-
-            this.selectedNode = selectedNodes.get(0);
-            SwingWorker<String, Void> worker = new SwingWorker<String, Void>() {
-
-                @Override
-                protected String doInBackground() throws Exception {
-                    return NodeViewerData.this.zooInspectorManager
-                            .getData(NodeViewerData.this.selectedNode);
-                }
-
-                @Override
-                protected void done() {
-                    String data = "";
-                    try {
-                        data = get();
-                    } catch (InterruptedException e) {
-                        LoggerFactory.getLogger().error(
-                                "Error retrieving data for node: "
-                                        + NodeViewerData.this.selectedNode, e);
-                    } catch (ExecutionException e) {
-                        LoggerFactory.getLogger().error(
-                                "Error retrieving data for node: "
-                                        + NodeViewerData.this.selectedNode, e);
-                    }
-                    NodeViewerData.this.dataArea.setText(data);
-                    long end = System.currentTimeMillis();
-                    System.out.println("NodeViewerData.nodeSelectionChanged() invoked. took: " + (end - start));
-
-                }
-            };
-            worker.execute();
         }
-    }
+      }
+    });
+    this.toolbar.add(saveButton);
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * org.apache.zookeeper.inspector.gui.nodeviewer.ZooInspectorNodeViewer#
-     * setZooInspectorManager
-     * (org.apache.zookeeper.inspector.manager.ZooInspectorNodeManager)
-     */
-    @Override
-    public void setZooInspectorManager(
-            ZooInspectorNodeManager zooInspectorManager) {
-        this.zooInspectorManager = zooInspectorManager;
+  }
+
+  /*
+   * (non-Javadoc)
+   * @see
+   * org.apache.zookeeper.inspector.gui.nodeviewer.ZooInspectorNodeViewer#
+   * getTitle()
+   */
+  @Override
+  public String getTitle() {
+    return "Node Data";
+  }
+
+  /*
+   * (non-Javadoc)
+   * @see
+   * org.apache.zookeeper.inspector.gui.nodeviewer.ZooInspectorNodeViewer#
+   * nodeSelectionChanged(java.util.Set)
+   */
+  @Override
+  public void nodeSelectionChanged(List<String> selectedNodes) {
+    if (selectedNodes.size() > 0) {
+      final long start = System.currentTimeMillis();
+
+      this.selectedNode = selectedNodes.get(0);
+      SwingWorker<String, Void> worker = new SwingWorker<String, Void>() {
+
+        @Override
+        protected String doInBackground() throws Exception {
+          return NodeViewerData.this.zooInspectorManager.getData(NodeViewerData.this.selectedNode);
+        }
+
+        @Override
+        protected void done() {
+          String data = "";
+          try {
+            data = get();
+          } catch (InterruptedException e) {
+            LoggerFactory.getLogger().error(
+                "Error retrieving data for node: " + NodeViewerData.this.selectedNode, e);
+          } catch (ExecutionException e) {
+            LoggerFactory.getLogger().error(
+                "Error retrieving data for node: " + NodeViewerData.this.selectedNode, e);
+          }
+          NodeViewerData.this.dataArea.setText(data);
+          NodeViewerData.this.dataArea.setCaretPosition(0);
+          // NodeViewerData.this.dataArea.moveCaretPosition(0);
+          long end = System.currentTimeMillis();
+          System.out.println("NodeViewerData.nodeSelectionChanged() invoked. took: "
+              + (end - start));
+
+        }
+      };
+      worker.execute();
     }
+  }
+
+  /*
+   * (non-Javadoc)
+   * @see
+   * org.apache.zookeeper.inspector.gui.nodeviewer.ZooInspectorNodeViewer#
+   * setZooInspectorManager
+   * (org.apache.zookeeper.inspector.manager.ZooInspectorNodeManager)
+   */
+  @Override
+  public void setZooInspectorManager(ZooInspectorNodeManager zooInspectorManager) {
+    this.zooInspectorManager = zooInspectorManager;
+  }
 
 }
