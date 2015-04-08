@@ -7,7 +7,7 @@ An improved zookeeper inspector
 - Sorted znodes
 - More readable node metadata viewer
 - Add a dropdown menu to show the last 10 successfully connected zookeeper addresses
-- Highlight searching text in node data viewer
+- Support text search in node data viewer
 - Support read-only mode for node data viewer
 
 Build
