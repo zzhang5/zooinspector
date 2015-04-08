@@ -8,6 +8,7 @@ An improved zookeeper inspector
 - More readable representation of node metadata
 - Add a dropdown menu to record the history of successfully connected zookeeper addresses
 - Highlight searching text in node data viewer
+- Support read-only mode for node data viewer
 
 Build
 - $git clone https://github.com/zzhang5/zooinspector.git
@@ -17,4 +18,3 @@ Build
 Run
 - $chmod +x target/zooinspector-pkg/bin/zooinspector.sh
 - $target/zooinspector-pkg/bin/zooinspector.sh
-

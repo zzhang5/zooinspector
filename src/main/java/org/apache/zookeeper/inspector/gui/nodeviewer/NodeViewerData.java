@@ -41,6 +41,7 @@ import javax.swing.text.DefaultHighlighter;
 import javax.swing.text.DefaultHighlighter.DefaultHighlightPainter;
 import javax.swing.text.DefaultStyledDocument;
 
+import org.apache.zookeeper.ZooKeeper.States;
 import org.apache.zookeeper.inspector.gui.NodeDataViewerFindDialog;
 import org.apache.zookeeper.inspector.gui.ZooInspectorIconResources;
 import org.apache.zookeeper.inspector.logger.LoggerFactory;
@@ -58,15 +59,14 @@ public class NodeViewerData extends ZooInspectorNodeViewer {
   private String selectedNode;
 
   public void highlight(String selText) {
+    highlighter.removeAllHighlights();
     if (selText == null || selText.isEmpty()) {
       return;
     }
 
-    highlighter.removeAllHighlights();
-    DefaultHighlightPainter hPainter = new DefaultHighlightPainter(Color.YELLOW /*
-                                                                                 * new
-                                                                                 * Color(0xFFAA00)
-                                                                                 */);
+    selText = selText.toLowerCase();
+    DefaultHighlightPainter hPainter = new DefaultHighlightPainter(Color.YELLOW);
+    
     // String selText = txtPane.getSelectedText();
     String contText = "";// = jTextPane1.getText();
 
@@ -74,6 +74,7 @@ public class NodeViewerData extends ZooInspectorNodeViewer {
 
     try {
       contText = document.getText(0, document.getLength());
+      contText = contText.toLowerCase();
     } catch (BadLocationException ex) {
       LoggerFactory.getLogger().error(null, ex);
     }
@@ -141,7 +142,7 @@ public class NodeViewerData extends ZooInspectorNodeViewer {
 
       @Override
       public void keyPressed(KeyEvent e) {
-        if ((e.getKeyCode() == KeyEvent.VK_F) && ((e.getModifiers() & KeyEvent.CTRL_MASK) != 0)) {
+        if ((e.getKeyCode() == KeyEvent.VK_F) && ((e.getModifiers() & (KeyEvent.CTRL_MASK | KeyEvent.META_MASK)) != 0)) {
           NodeDataViewerFindDialog dialog = new NodeDataViewerFindDialog(NodeViewerData.this);
           dialog.setVisible(true);
         } else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
@@ -149,6 +150,7 @@ public class NodeViewerData extends ZooInspectorNodeViewer {
         }
       }
     });
+    dataArea.setEditable(false);
 
     this.toolbar = new JToolBar();
     this.toolbar.setFloatable(false);
@@ -157,7 +159,7 @@ public class NodeViewerData extends ZooInspectorNodeViewer {
 
     this.add(scroller, BorderLayout.CENTER);
     this.add(this.toolbar, BorderLayout.NORTH);
-    JButton saveButton = new JButton(ZooInspectorIconResources.getSaveIcon());
+    final JButton saveButton = new JButton(ZooInspectorIconResources.getSaveIcon());
     saveButton.addActionListener(new ActionListener() {
 
       public void actionPerformed(ActionEvent e) {
@@ -170,7 +172,36 @@ public class NodeViewerData extends ZooInspectorNodeViewer {
         }
       }
     });
+    saveButton.setEnabled(false);
     this.toolbar.add(saveButton);
+
+    // add an edit icon
+    JButton editButton = new JButton(ZooInspectorIconResources.getEditIcon());
+    editButton.addActionListener(new ActionListener() {
+
+      public void actionPerformed(ActionEvent e) {
+        // toggle save button
+        if (zooInspectorManager != null && zooInspectorManager.getZookeeperStates() == States.CONNECTED) {
+          saveButton.setEnabled(!saveButton.isEnabled());
+          dataArea.setEditable(saveButton.isEnabled());
+        }
+      }
+    });
+    this.toolbar.add(editButton);
+    
+    // add a search icon
+    JButton searchButton = new JButton(ZooInspectorIconResources.getSearchIcon());
+    searchButton.setToolTipText("Find (^/⌘-F)");
+    searchButton.addActionListener(new ActionListener() {
+
+      public void actionPerformed(ActionEvent e) {
+        // if (zooInspectorManager != null && zooInspectorManager.getZookeeperStates() == States.CONNECTED) {
+          NodeDataViewerFindDialog dialog = new NodeDataViewerFindDialog(NodeViewerData.this);
+          dialog.setVisible(true);
+        // }
+      }
+    });
+    this.toolbar.add(searchButton);
 
   }
 

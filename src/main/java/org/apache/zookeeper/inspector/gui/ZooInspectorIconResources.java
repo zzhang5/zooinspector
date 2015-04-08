@@ -154,4 +154,21 @@ public class ZooInspectorIconResources {
         InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream("icons/search_next.gif");
         return new ImageIcon(readFully(in)); //$NON-NLS-1$
     }
+    
+    /**
+     * @return edit icon
+     */
+    public static ImageIcon getEditIcon() {
+        InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream("icons/edit.gif");
+        return new ImageIcon(readFully(in)); //$NON-NLS-1$
+    }
+
+    /**
+     * @return search icon
+     */
+    public static ImageIcon getSearchIcon() {
+        InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream("icons/search.gif");
+        return new ImageIcon(readFully(in)); //$NON-NLS-1$
+    }
+
 }
