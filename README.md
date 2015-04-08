@@ -5,8 +5,8 @@ An improved zookeeper inspector
 
 - Make use of async zookeeper operations to speed up
 - Sorted znodes
-- More readable representation of node metadata
-- Add a dropdown menu to record the history of successfully connected zookeeper addresses
+- More readable node metadata viewer
+- Add a dropdown menu to show the last 10 successfully connected zookeeper addresses
 - Highlight searching text in node data viewer
 - Support read-only mode for node data viewer
 
