@@ -194,7 +194,7 @@ public class NodeViewerData extends ZooInspectorNodeViewer {
     String osName = System.getProperty("os.name").toLowerCase();
     String tipText = "Find (^F)";
     if (osName != null && osName.indexOf("mac") > -1) {
-      tipText = "Find (⌘F)";
+      tipText = "Find (^/⌘F)";
     }
     searchButton.setToolTipText(tipText);
     searchButton.addActionListener(new ActionListener() {
