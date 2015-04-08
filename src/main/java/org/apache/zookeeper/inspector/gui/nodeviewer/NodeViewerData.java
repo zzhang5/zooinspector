@@ -66,7 +66,7 @@ public class NodeViewerData extends ZooInspectorNodeViewer {
 
     selText = selText.toLowerCase();
     DefaultHighlightPainter hPainter = new DefaultHighlightPainter(Color.YELLOW);
-    
+
     // String selText = txtPane.getSelectedText();
     String contText = "";// = jTextPane1.getText();
 
@@ -188,10 +188,15 @@ public class NodeViewerData extends ZooInspectorNodeViewer {
       }
     });
     this.toolbar.add(editButton);
-    
+
     // add a search icon
     JButton searchButton = new JButton(ZooInspectorIconResources.getSearchIcon());
-    searchButton.setToolTipText("Find (^/⌘-F)");
+    String osName = System.getProperty("os.name").toLowerCase();
+    String tipText = "Find (^F)";
+    if (osName != null && osName.indexOf("mac") > -1) {
+      tipText = "Find (⌘F)";
+    }
+    searchButton.setToolTipText(tipText);
     searchButton.addActionListener(new ActionListener() {
 
       public void actionPerformed(ActionEvent e) {
