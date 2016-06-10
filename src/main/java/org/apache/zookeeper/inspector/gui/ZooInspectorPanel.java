@@ -34,6 +34,7 @@ import javax.swing.JSplitPane;
 import javax.swing.JToolBar;
 import javax.swing.SwingWorker;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.zookeeper.ZooKeeper.States;
 import org.apache.zookeeper.inspector.gui.nodeviewer.ZooInspectorNodeViewer;
 import org.apache.zookeeper.inspector.logger.LoggerFactory;
@@ -204,8 +205,8 @@ public class ZooInspectorPanel extends JPanel implements
                 } else {
                     int answer = JOptionPane.showConfirmDialog(
                             ZooInspectorPanel.this,
-                            "Are you sure you want to delete the selected nodes?"
-                                    + "(This action cannot be reverted)",
+                            "Are you sure you want to permanently delete the following nodes?"
+                                    + " \n" + StringUtils.join(selectedNodes, "\n"),
                             "Confirm Delete", JOptionPane.YES_NO_OPTION,
                             JOptionPane.WARNING_MESSAGE);
                     if (answer == JOptionPane.YES_OPTION) {
