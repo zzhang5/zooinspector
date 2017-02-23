@@ -9,7 +9,7 @@ An improved zookeeper inspector
 - Add a dropdown menu to show the last 10 successfully connected zookeeper addresses
 - Support text search in node data viewer
 - Support read-only mode for node data viewer
-- **Support addAuthInfo in the connection dialog. eg."digest,AuthKey"（zk.addAuthInfo(scheme,auth)
+- **Support addAuthInfo in the connection dialog. eg."digest,AuthKey"（zk.addAuthInfo(scheme,auth)**
 
 
 
