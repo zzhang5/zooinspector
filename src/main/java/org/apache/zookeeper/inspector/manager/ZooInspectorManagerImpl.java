@@ -93,6 +93,10 @@ public class ZooInspectorManagerImpl implements ZooInspectorManager
    * The key used for the data encryption manager in the connection properties file
    */
   public static final String DATA_ENCRYPTION_MANAGER = "encryptionManager";
+  /**
+   * The key used for the permission auth info in the connection properties file
+   */
+  public static final String AUTH_INFO="authInfo";
 
   private static final String homeDir = System.getProperty("user.home");
   private static final File defaultNodeViewersFile =
@@ -117,6 +121,8 @@ public class ZooInspectorManagerImpl implements ZooInspectorManager
   private String defaultTimeout;
   private String defaultHosts;
   private List<String> defaultHostsList;
+  private String defaultAuthInfo;
+
   private final int defaultHostsListSize = 10;
 
   // zk cache that updates when:
@@ -152,6 +158,7 @@ public class ZooInspectorManagerImpl implements ZooInspectorManager
         String connectString = connectionProps.getProperty(CONNECT_STRING);
         String sessionTimeout = connectionProps.getProperty(SESSION_TIMEOUT);
         String encryptionManager = connectionProps.getProperty(DATA_ENCRYPTION_MANAGER);
+        String authInfo = connectionProps.getProperty(AUTH_INFO);
         if (connectString == null || sessionTimeout == null)
         {
           throw new IllegalArgumentException("Both connect string and session timeout are required.");
@@ -195,8 +202,14 @@ public class ZooInspectorManagerImpl implements ZooInspectorManager
                                  }
                                });
         ((ZooKeeperRetry) this.zooKeeper).setRetryLimit(10);
+        if(authInfo!=null){
+          String[] auth = authInfo.split(",");
+          if(auth.length==2){
+            this.zooKeeper.addAuthInfo(auth[0],auth[1].getBytes());
+            this.defaultAuthInfo = authInfo;
+          }
+        }
 //        System.out.println("[START] connected took: " + (System.currentTimeMillis() - start));
-
         connected = ((ZooKeeperRetry) this.zooKeeper).testConnection();
       }
     }
@@ -830,10 +843,13 @@ public class ZooInspectorManagerImpl implements ZooInspectorManager
     template.put(SESSION_TIMEOUT, Arrays.asList(new String[] { defaultTimeout }));
     template.put(DATA_ENCRYPTION_MANAGER,
                  Arrays.asList(new String[] { defaultEncryptionManager }));
+    template.put(AUTH_INFO,Arrays.asList(new String[]{defaultAuthInfo}));
+
     Map<String, String> labels = new LinkedHashMap<String, String>();
     labels.put(CONNECT_STRING, "Connect String");
     labels.put(SESSION_TIMEOUT, "Session Timeout");
     labels.put(DATA_ENCRYPTION_MANAGER, "Data Encryption Manager");
+    labels.put(AUTH_INFO, "Auth Info");
     return new Pair<Map<String, List<String>>, Map<String, String>>(template, labels);
   }
 
@@ -1049,6 +1065,10 @@ public class ZooInspectorManagerImpl implements ZooInspectorManager
       defaultHosts =
           props.getProperty(CONNECT_STRING) == null ? "localhost:2181"
               : props.getProperty(CONNECT_STRING);
+
+      defaultAuthInfo =
+              props.getProperty(AUTH_INFO) == null ? ""
+                      : props.getProperty(AUTH_INFO);
     }
     else
     {
@@ -1125,6 +1145,7 @@ public class ZooInspectorManagerImpl implements ZooInspectorManager
     properties.setProperty(CONNECT_STRING, sb.toString());
     properties.setProperty(SESSION_TIMEOUT, defaultTimeout);
     properties.getProperty(DATA_ENCRYPTION_MANAGER, defaultEncryptionManager);
+    properties.setProperty(AUTH_INFO,defaultAuthInfo);
     saveDefaultConnectionFile(properties);
   }
 

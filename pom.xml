@@ -63,11 +63,10 @@
   <build>
     <defaultGoal>clean install</defaultGoal>
     <plugins>
-
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>appassembler-maven-plugin</artifactId>
-        <version>1.1.1</version>
+        <version>2.0.0</version>
         <configuration>
           <binFileExtensions>
             <unix>.sh</unix>
@@ -105,7 +104,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-assembly-plugin</artifactId>
-          <version>2.3</version>
+          <version>2.5.3</version>
           <configuration>
             <descriptors>
               <descriptor>${project.basedir}/src/assemble/assembly.xml</descriptor>
@@ -125,8 +124,8 @@
             <artifactId>maven-compiler-plugin</artifactId>
             <version>3.0</version>
             <configuration>
-                <source>1.5</source>
-                <target>1.5</target>
+                <source>1.7</source>
+                <target>1.7</target>
             </configuration>
         </plugin>
     </plugins>

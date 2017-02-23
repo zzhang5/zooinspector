@@ -9,6 +9,7 @@ An improved zookeeper inspector
 - Add a dropdown menu to show the last 10 successfully connected zookeeper addresses
 - Support text search in node data viewer
 - Support read-only mode for node data viewer
+- **Support addAuthInfo in the connection dialog. eg."digest,AuthKey"（zk.addAuthInfo(scheme,auth)）**
 
 Build
 - $git clone https://github.com/zzhang5/zooinspector.git
@@ -18,3 +19,5 @@ Build
 Run
 - $chmod +x target/zooinspector-pkg/bin/zooinspector.sh
 - $target/zooinspector-pkg/bin/zooinspector.sh
+
+
