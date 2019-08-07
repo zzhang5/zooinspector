@@ -10,11 +10,23 @@ An improved zookeeper inspector
 - Support text search in node data viewer
 - Support read-only mode for node data viewer
 
-Build
+Build in Linux
 - $git clone https://github.com/zzhang5/zooinspector.git
 - $cd zooinspector/
 - $mvn clean package
 
-Run
+Run in Linux
+
 - $chmod +x target/zooinspector-pkg/bin/zooinspector.sh
 - $target/zooinspector-pkg/bin/zooinspector.sh
+
+Build in Windows
+- git clone https://github.com/zzhang5/zooinspector.git
+- cd zooinspector
+- mvn clean package
+
+Run in Windows
+
+- cd target
+- java -jar zooinspector-1.0-SNAPSHOT.jar
+
