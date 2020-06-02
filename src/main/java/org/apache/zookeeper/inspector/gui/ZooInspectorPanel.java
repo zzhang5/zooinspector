@@ -142,6 +142,7 @@ public class ZooInspectorPanel extends JPanel implements
                         zooInspectorManager.getLastConnectionProps(),
                         zooInspectorManager.getConnectionPropertiesTemplate(),
                         ZooInspectorPanel.this);
+                zicpd.setLocationRelativeTo(null);
                 zicpd.setVisible(true);
             }
         });
