@@ -69,6 +69,7 @@ public class ZooInspector {
 
             frame.setContentPane(zooInspectorPanel);
             frame.setSize(1024, 768);
+            frame.setLocationRelativeTo(frame.getOwner());
 //            frame.setSize(screenWidth * 2 / 3, screenHeight);
             frame.setVisible(true);
         } catch (Exception e) {
