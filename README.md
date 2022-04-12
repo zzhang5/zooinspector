@@ -18,3 +18,9 @@ Build
 Run
 - $chmod +x target/zooinspector-pkg/bin/zooinspector.sh
 - $target/zooinspector-pkg/bin/zooinspector.sh
+
+If you see the error: Error: JAVA_HOME is not defined correctly:
+  We cannot execute /System/Library/Frameworks/JavaVM.framework/Versions/CurrentJDK/Home/bin/java
+  
+You can execute: 
+  export JAVA_HOME=`/usr/libexec/java_home`
