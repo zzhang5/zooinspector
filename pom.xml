@@ -4,7 +4,7 @@
   <groupId>org.apache.zookeeper</groupId>
   <artifactId>zooinspector</artifactId>
   <packaging>jar</packaging>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.1</version>
   <name>zooinspector</name>
   <url>http://maven.apache.org</url>
 
@@ -41,7 +41,7 @@
     <dependency>
       <groupId>org.apache.zookeeper</groupId>
       <artifactId>zookeeper</artifactId>
-      <version>3.3.3</version>
+      <version>3.6.0</version>
       <exclusions>
         <exclusion>
           <groupId>junit</groupId>
